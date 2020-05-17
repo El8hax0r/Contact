@@ -1,17 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace ContactApp
 {
@@ -27,7 +14,19 @@ namespace ContactApp
 
         private void uxFileNew_Click(object sender, RoutedEventArgs e)
         {
+            var window = new ContactWindow();
 
+            if (window.ShowDialog() == true)
+            {
+                var uiContactModel = window.Contact;
+
+                var repositoryContactModel = uiContactModel.ToRepositoryModel();
+
+                App.ContactRepository.Add(repositoryContactModel);
+
+                // OR
+                //App.ContactRepository.Add(window.Contact.ToRepositoryModel());
+            }
         }
     }
 }
