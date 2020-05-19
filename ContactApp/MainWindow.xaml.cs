@@ -16,12 +16,15 @@ namespace ContactApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        private ContactModel selectedContact;
+        
         public MainWindow()
         {
             InitializeComponent();
 
             LoadContacts();
         }
+        
         private void LoadContacts()
         {
             var contacts = App.ContactRepository.GetAll();
@@ -64,10 +67,33 @@ namespace ContactApp
         }
         private void uxFileChange_Click(object sender, RoutedEventArgs e)
         {
+            var window = new ContactWindow();
+            window.Contact = selectedContact;
+
+            if (window.ShowDialog() == true)
+            {
+                App.ContactRepository.Update(window.Contact.ToRepositoryModel());
+                LoadContacts();
+            }
+        }
+        private void uxFileChange_Loaded(object sender, RoutedEventArgs e)
+        {
+            uxFileChange.IsEnabled = (selectedContact != null);
+            uxContextFileChange.IsEnabled = uxFileChange.IsEnabled;
         }
 
         private void uxFileDelete_Click(object sender, RoutedEventArgs e)
         {
+            App.ContactRepository.Remove(selectedContact.Id);
+            selectedContact = null;
+            LoadContacts();
+
+        }
+        private void uxFileDelete_Loaded(object sender, RoutedEventArgs e)
+        {
+            uxFileDelete.IsEnabled = (selectedContact != null);
+            //test to replace void uxcontextfiledelete_loaded  b  
+            uxContextFileDelete.IsEnabled = uxFileDelete.IsEnabled;
         }
 
         private GridViewColumnHeader listViewSortCol = null;
@@ -95,5 +121,18 @@ namespace ContactApp
             uxContactList.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
 
         }
+
+        private void uxContactList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            selectedContact = (ContactModel)uxContactList.SelectedValue;
+        }
+
+        private void uxContextFileDelete_Loaded(object sender, RoutedEventArgs e)
+        {
+            uxContextFileDelete.IsEnabled = (selectedContact != null);
+        }
+        
+
+        
     }
 }

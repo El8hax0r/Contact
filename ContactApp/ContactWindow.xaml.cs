@@ -16,16 +16,35 @@ namespace ContactApp
             // Don't show this window in the task bar
             ShowInTaskbar = false;
         }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (Contact != null)
+            {
+                if (Contact.PhoneType == "Home")
+                {
+                    uxHome.IsChecked = true;
+                }
+                else
+                {
+                    uxMobile.IsChecked = true;
+                }
+                uxSubmit.Content = "Update";
+            }
+            else
+            {
+                Contact = new ContactModel();
+                Contact.Age = (int)uxAgeSlider.Value;
+                Contact.CreatedDate = DateTime.Now;
+            }
+
+            uxGrid.DataContext = Contact;
+        }
 
         public ContactModel Contact { get; set; }
 
         private void uxSubmit_Click(object sender, RoutedEventArgs e)
         {
-            Contact = new ContactModel();
-
-            Contact.Name = uxName.Text;
-            Contact.Email = uxEmail.Text;
-
+            //new
             if (uxHome.IsChecked.Value)
             {
                 Contact.PhoneType = "Home";
@@ -35,14 +54,31 @@ namespace ContactApp
                 Contact.PhoneType = "Mobile";
             }
 
-            Contact.PhoneNumber = uxPhoneNumber.Text;
-            Contact.Age = (int)uxAgeSlider.Value;
-            Contact.Notes = uxNotes.Text;
-            Contact.CreatedDate = DateTime.Now;
-
-            // This is the return value of ShowDialog( ) below
             DialogResult = true;
             Close();
+            //old
+            //Contact = new ContactModel();
+
+            //Contact.Name = uxName.Text;
+            //Contact.Email = uxEmail.Text;
+
+            //if (uxHome.IsChecked.Value)
+            //{
+            //    Contact.PhoneType = "Home";
+            //}
+            //else
+            //{
+            //    Contact.PhoneType = "Mobile";
+            //}
+
+            //Contact.PhoneNumber = uxPhoneNumber.Text;
+            //Contact.Age = (int)uxAgeSlider.Value;
+            //Contact.Notes = uxNotes.Text;
+            //Contact.CreatedDate = DateTime.Now;
+
+            // This is the return value of ShowDialog( ) below
+            //DialogResult = true;
+            //Close();
         }
 
         private void uxCancel_Click(object sender, RoutedEventArgs e)
